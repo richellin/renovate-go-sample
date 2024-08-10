@@ -1,0 +1,61 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  timezone: "Asia/Tokyo", // Scheduleのタイムゾーンを設定
+  extends: [
+    "config:best-practices", // ref: https://github.com/renovatebot/renovate/blob/main/lib/config/presets/internal/config.ts
+    ":prHourlyLimitNone", // 1時間で作れるPR数の制限を外す
+    "npm:unpublishSafe", // npm packageがpublishされてから3日待つ
+  ],
+  schedule: [
+    // 平日午前10時から午後7時までの間にアップデート
+    "after 10:00am and before 7:00pm every weekday",
+  ],
+  rangeStrategy: "update-lockfile", // 範囲内の場合は、アップデートできる範囲でアップデート or 範囲外の場合は、新しいものに置き換えてアップデート
+  major: {
+    draftPR: true, // Draft PRを作成する
+    dependencyDashboardApproval: true, // PR作成前に依存関係ダッシュボードの承認が必要となるフラグ
+  },
+  labels: ["other", "dependencies"], // ルール以外のものが検知された場合のラベリング
+  ignoreDeps: [
+    // アップデート対象から除外
+    "mysql",
+  ],
+  "postUpdateOptions": [
+      "gomodTidy", // Enable go mod tidy
+  ],
+  packageRules: [
+    // Go(Module)
+    {
+      enabled: false,
+      matchManagers: ["gomod"],
+      matchUpdateTypes: ["major"],
+    },
+    {
+      // Group update of direct Go dependencies.
+      enabled: true,
+      automerge: false,
+      matchManagers: ["gomod"],
+      matchUpdateTypes: ["minor", "patch", "pin", "digest"], // majorは対象としない
+      groupName: "Go dependencies",
+      labels: ["gomod", "server", "dependencies"],
+      assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+    },
+
+    // GitHub Actions
+    {
+      enabled: true,
+      automerge: false,
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["minor", "patch", "pin", "digest"], // majorは対象としない
+      groupName: "GitHub action dependencies",
+      labels: ["github-action", "ci", "dependencies"],
+      assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+    },
+  ],
+  // 脆弱性が検知された場合(スケジュール設定と関係なくアップデートされる)
+  vulnerabilityAlerts: {
+    labels: ["vulnerabilities", "dependencies"],
+    automerge: false,
+    assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+  },
+}
