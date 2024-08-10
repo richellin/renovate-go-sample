@@ -38,7 +38,7 @@
       matchUpdateTypes: ["minor", "patch", "pin", "digest"], // majorは対象としない
       groupName: "Go dependencies",
       labels: ["gomod", "server", "dependencies"],
-      assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+      assignees: ["@richellin"], // 自動マージしない場合は担当者をアサインする
     },
 
     // GitHub Actions
@@ -49,13 +49,13 @@
       matchUpdateTypes: ["minor", "patch", "pin", "digest"], // majorは対象としない
       groupName: "GitHub action dependencies",
       labels: ["github-action", "ci", "dependencies"],
-      assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+      assignees: ["@richellin"], // 自動マージしない場合は担当者をアサインする
     },
   ],
   // 脆弱性が検知された場合(スケジュール設定と関係なくアップデートされる)
   vulnerabilityAlerts: {
     labels: ["vulnerabilities", "dependencies"],
     automerge: false,
-    assignees: ["@hassyadai-kokada"], // 自動マージしない場合は担当者をアサインする
+    assignees: ["@richellin"], // 自動マージしない場合は担当者をアサインする
   },
 }
